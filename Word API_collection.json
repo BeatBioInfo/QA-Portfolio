@@ -1,0 +1,3883 @@
+{
+	"info": {
+		"_postman_id": "6ceeeb2e-d8e7-4891-84e9-e195058e2da5",
+		"name": "Word API",
+		"description": "This **WORD API collection** contains tests used to automate the testing process of two selected ***API*** [endpoints](https://www.wordsapi.com/docs/?shell#searching) using the RESTful principles from RAPID API.\n\n*   *GET a word*\n    \n\n*   *GET a word detail*\n    \n\n# How to run the [project](https://drive.google.com/drive/folders/1-6Oei9XGAhRGnuQ01sZopY3U37VLwFiA?usp=sharing)\n\n*   Create a collection on Postman\n*   Add folders and subfolders for each test where necessary.\n*   Set the environment for ***stage***\n*   Add needed environment variables\n*   Enter the endpoints for each test and call\n    *   Using the Get method\n*   Execute all the test in the folder\n    *   By clicking on the \"run\" button\n*   Execute automatically using CLI via Newman command `$ newman run Word\\ API_collection.json -e Word\\ API_Stage\\ Env.json`\n    \n\n# Vital details about the tests\n\n*   Organized the test scenarios by grouping the requests into folders, and naming them descriptively.\n*   Documented API’s requirements in each folder\n*   Use variables to simulate more sophisticated user flows where necessary.\n*   Used Boundary Value Analysis (BVA) and Equivalent partitioning (EP) to design the tests.\n    \n\n***PS.***\n\nFor BVA: Only the following is considered since the maximum allowed value remain unknown and is not specified.\n\n1.  *Minimum allowed length*\n2.  *A value above the minimum allowed length (lower boundary level).*\n3.  *Maximum allowed length in a dictionary (45)*\n4.  *A value below the maximum allowed length in a dictionary (44).*\n    \n\nFor EP: Each word is classified based on the features of the words such as ordinal numbers, nouns, adjectives etc.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21506136"
+	},
+	"item": [
+		{
+			"name": "1.1 Authorization & API end point",
+			"item": [
+				{
+					"name": "Secured HTTP + correct API-key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check response body\", function () {\r",
+									"    const body = pm.response.json();\r",
+									"    pm.expect(body.word).to.be.a('string')\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type header is present\", () => {\r",
+									"  pm.response.to.have.header(\"Content-Type\");\r",
+									"});\r",
+									"\r",
+									"// test scripts for test arrays\r",
+									"pm.test(\"The 'definition' is correct\", function () {\r",
+									"    // You can select any element from the array to test \r",
+									"    const body = pm.response.json();\r",
+									"    const result = body.results.find(el => el.partOfSpeech === 'noun');\r",
+									"\r",
+									"    pm. expect(result).not.undefined;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"The 'partOfSpeech' is correct\", () => {\r",
+									"    const body = pm.response.json();\r",
+									"    _.each(body.results, (item) => {\r",
+									"        pm.expect(item.partOfSpeech).to.include('noun');\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "66ef45eb8amsh5471d964edc9042p12b4dajsn80565566cd70",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "X-RapidAPI-Key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Host}}/words/word",
+							"host": [
+								"{{Host}}"
+							],
+							"path": [
+								"words",
+								"word"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Insecure HTTP + correct API-key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Error message is correct\", function () {\r",
+									"    const body = pm.response.json()\r",
+									"    pm.expect(body.error) .to.equal ('results')\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{InsecuredAPI}}/words/word",
+							"host": [
+								"{{InsecuredAPI}}"
+							],
+							"path": [
+								"words",
+								"word"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Wrong API version - 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Error message is correct\", function () {\r",
+									"    const body = pm.response.json()\r",
+									"    pm.expect(body.message) .to.equal (\"API doesn't exists\")\r",
+									"});\r",
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "66ef45eb8amsh5471d964edc9042p12b4dajsn80565566cd70",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "X-RapidAPI-Key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API-V2}}/words/word",
+							"host": [
+								"{{API-V2}}"
+							],
+							"path": [
+								"words",
+								"word"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Incorrect API-key header",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Error message is correct\", function () {\r",
+									"    const body = pm.response.json()\r",
+									"    pm.expect(body.message) .to.equal (\"Invalid API key. Go to https://docs.rapidapi.com/docs/keys for more info.\")\r",
+									"});\r",
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "66ef45eb8amsh5471d964edc9042p12b4dajsn80565566cd70",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "X-RapidAPI",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Host}}/words/word",
+							"host": [
+								"{{Host}}"
+							],
+							"path": [
+								"words",
+								"word"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Empty API-key header",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Error message is correct\", function () {\r",
+									"    const body = pm.response.json()\r",
+									"    pm.expect(body.message) .to.equal (\"Invalid API key. Go to https://docs.rapidapi.com/docs/keys for more info.\")\r",
+									"});\r",
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "66ef45eb8amsh5471d964edc9042p12b4dajsn80565566cd70",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Host}}/words/word",
+							"host": [
+								"{{Host}}"
+							],
+							"path": [
+								"words",
+								"word"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Empty API-key value",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Error message is correct\", function () {\r",
+									"    const body = pm.response.json()\r",
+									"    pm.expect(body.message) .to.equal (\"Invalid API key. Go to https://docs.rapidapi.com/docs/keys for more info.\")\r",
+									"});\r",
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "X-RapidAPI-Key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Host}}/words/word",
+							"host": [
+								"{{Host}}"
+							],
+							"path": [
+								"words",
+								"word"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Incorrect API-key value",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Error message is correct\", function () {\r",
+									"    const body = pm.response.json()\r",
+									"    pm.expect(body.message) .to.equal (\"You are not subscribed to this API.\")\r",
+									"});\r",
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "766ef45eb8amsh5471d964edc9042p12b4dajsn80565566cd70",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "X-RapidAPI-Key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Host}}/words/word",
+							"host": [
+								"{{Host}}"
+							],
+							"path": [
+								"words",
+								"word"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid auth (no auth)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error message is correct\", function () {\r",
+									"    const body = pm.response.json()\r",
+									"    pm.expect(body.message) .to.equal (\"Invalid API key. Go to https://docs.rapidapi.com/docs/keys for more info.\")\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type header is present\", () => {\r",
+									"  pm.response.to.have.header(\"Content-Type\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Host}}/words/word",
+							"host": [
+								"{{Host}}"
+							],
+							"path": [
+								"words",
+								"word"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "apikey",
+				"apikey": [
+					{
+						"key": "key",
+						"value": "",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Response time is less than 1000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+							"});",
+							"",
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "1.2 Get a Word API Endpoint",
+			"item": [
+				{
+					"name": "Positive test",
+					"item": [
+						{
+							"name": "Happy path",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"auth": {
+									"type": "apikey",
+									"apikey": [
+										{
+											"key": "in",
+											"value": "header",
+											"type": "string"
+										},
+										{
+											"key": "key",
+											"value": "X-RapidAPI-Key",
+											"type": "string"
+										},
+										{
+											"key": "value",
+											"value": "66ef45eb8amsh5471d964edc9042p12b4dajsn80565566cd70",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{Host}}/words/.22-caliber",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										".22-caliber"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch min allowed length (1)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/a",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"a"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a value above minimum allowed length (2)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/as",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"as"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a value of max allowed length in a dictionary (45)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/Pneumonoultramicroscopicsilicovolcanoconiosis",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"Pneumonoultramicroscopicsilicovolcanoconiosis"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a value below the max allowed length in a dictionary (44)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.message).to.be.equal('word not found')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/osteosarchaematosplanchnochondroneuromuelous",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"osteosarchaematosplanchnochondroneuromuelous"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a value above the max length in a dictionary (52)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.message) .to.equal (\"word not found\")\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/Aequeosalinocalcalinoceraceoaluminosocupreovitriolic",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"Aequeosalinocalcalinoceraceoaluminosocupreovitriolic"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch Latin letters only",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"auth": {
+									"type": "apikey",
+									"apikey": [
+										{
+											"key": "in",
+											"value": "header",
+											"type": "string"
+										},
+										{
+											"key": "key",
+											"value": "X-RapidAPI-Key",
+											"type": "string"
+										},
+										{
+											"key": "value",
+											"value": "66ef45eb8amsh5471d964edc9042p12b4dajsn80565566cd70",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{Host}}/words/cardinal",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"cardinal"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch Numbers only",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});``"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/1000",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"1000"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch an alphanumeric value - H2O",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/H2O",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"H2O"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch an ordinal number in words",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/thirtieth",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"thirtieth"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch an ordinal number in alphanumeric form",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/40th",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"40th"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch Roman numerals",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/XCIV",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"XCIV"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch words with consonant letters only",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"const jsonData = pm.response.json();\r",
+											"pm.test(\"Test data type of the response\", () => {\r",
+											"  pm.expect(jsonData).to.be.an(\"object\");\r",
+											"  pm.expect(jsonData.message).to.be.a(\"string\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/Tsktsk",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"Tsktsk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch words with vowel letters only",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.message).to.be.equal('word not found')\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/Euouae",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"Euouae"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a phrase with \"space\"",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/sit up",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"sit up"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a hyphenated word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/blue-collar",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"blue-collar"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a idiom",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.message) .to.equal (\"word not found\")\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"auth": {
+									"type": "apikey",
+									"apikey": [
+										{
+											"key": "in",
+											"value": "header",
+											"type": "string"
+										},
+										{
+											"key": "key",
+											"value": "X-RapidAPI-Key",
+											"type": "string"
+										},
+										{
+											"key": "value",
+											"value": "66ef45eb8amsh5471d964edc9042p12b4dajsn80565566cd70",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{Host}}/words/Better late than never",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"Better late than never"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch an isogram - Uncopyrightable",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"const jsonData = pm.response.json();\r",
+											"pm.test(\"Test data type of the response\", () => {\r",
+											"  pm.expect(jsonData).to.be.an(\"object\");\r",
+											"  pm.expect(jsonData.message).to.be.a(\"string\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/Uncopyrightable",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"Uncopyrightable"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a plural",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/boys",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"boys"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch mnemonics",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"const jsonData = pm.response.json();\r",
+											"pm.test(\"Test data type of the response\", () => {\r",
+											"  pm.expect(jsonData).to.be.an(\"object\");\r",
+											"  pm.expect(jsonData.message).to.be.a(\"string\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/lol",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"lol"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a monosyllabic word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/Strengths",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"Strengths"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a disyllabic word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/grandeur",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"grandeur"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch hypernyms",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/primate",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"primate"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch hyponyms",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/daisy",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"daisy"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a palindromic word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.message) .to.equal (\"word not found, please check again\")\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/Tattarrattat",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"Tattarrattat"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a \"common\" noun",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/Time",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"Time"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a \"proper\" noun",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/Hawaii",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"Hawaii"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch an adverbial word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/always",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"always"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch for an hyphenated duplicated word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/aye-aye",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"aye-aye"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "The requests in this sub-folder demonstrate positive test scenarios.\n\n## Summary\n\nAll the executed test scripts for each request were successful and passed",
+					"auth": {
+						"type": "apikey",
+						"apikey": [
+							{
+								"key": "key",
+								"value": "X-RapidAPI-Key",
+								"type": "string"
+							},
+							{
+								"key": "value",
+								"value": "66ef45eb8amsh5471d964edc9042p12b4dajsn80565566cd70",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Negative test",
+					"item": [
+						{
+							"name": "Fetch an empty input",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.message) .to.equal (\"Word is required.\")\r",
+											"})\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"//deep test the content of the test script\r",
+											"pm.test(\"Check response body\", () => {\r",
+											"    const body = {\r",
+											"        \"success\": false,\r",
+											"        \"message\": \"Word is required.\"\r",
+											"    };\r",
+											"    pm.expect(pm.response.json()).to.deep.include(body);\r",
+											"    });\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a duplicated word as input",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.message) .to.equal (\"word not found, please check your spelling\")\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/receive receive",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"receive receive"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a non-Latin letter only",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.message) .to.equal (\"word not found, enter a latin letter\")\r",
+											"})\r",
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											"const jsonData = pm.response.json();\r",
+											"pm.test(\"Test data type of the response\", () => {\r",
+											"  pm.expect(jsonData).to.be.an(\"object\");\r",
+											"  pm.expect(jsonData.message).to.be.a(\"string\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/ротато",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"ротато"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch misspelt words",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.message) .to.equal (\"word not found, please check your spelling\")\r",
+											"})\r",
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											"const jsonData = pm.response.json();\r",
+											"pm.test(\"Test data type of the response\", () => {\r",
+											"  pm.expect(jsonData).to.be.an(\"object\");\r",
+											"  pm.expect(jsonData.message).to.be.a(\"string\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/recieve",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"recieve"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch for Latin word beginning with a \"space\"",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.message) .to.equal (\"string\")\r",
+											"})\r",
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.message) .to.equal (\"word not found, see also strengths\")\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/ Strengths",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										" Strengths"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch special characters only",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.message) .to.equal (\"word not found, please check your spelling or try another word\")\r",
+											"})\r",
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											"const jsonData = pm.response.json();\r",
+											"pm.test(\"Test data type of the response\", () => {\r",
+											"  pm.expect(jsonData).to.be.an(\"object\");\r",
+											"  pm.expect(jsonData.message).to.be.a(\"string\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/\",\"",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"\",\""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch Clauses",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.message) .to.equal (\"word not found, please check your spelling or try another word\")\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/I eat bananas",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"I eat bananas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a word with 512 character long",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.message) .to.equal (\"word not found, please check your spelling or try another word\")\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/Methionylthreonylthreonylglutaminylarginyltyrosylglutamylserylleucylphenylalanylalanylglutaminylleucyllysylglutamylarginyllysylglutamylglycylalanylphenylalanylvalylprolylphenylalanylvalylthreonylleucylglycylaspartylprolylglycylisoleucylglutamylglutaminylserylleucyllysylisoleucylaspartylthreonylleucylisoleucylglutamylalanylglycylalanylaspartylalanylleucylglutamylleucylglycylisoleucylprolylphenylalanylserylaspartylprolylleucylalanylaspartylglycylprolylthreonylisoleucylglutaminylasparaginylalanylthreonylleucyl",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"Methionylthreonylthreonylglutaminylarginyltyrosylglutamylserylleucylphenylalanylalanylglutaminylleucyllysylglutamylarginyllysylglutamylglycylalanylphenylalanylvalylprolylphenylalanylvalylthreonylleucylglycylaspartylprolylglycylisoleucylglutamylglutaminylserylleucyllysylisoleucylaspartylthreonylleucylisoleucylglutamylalanylglycylalanylaspartylalanylleucylglutamylleucylglycylisoleucylprolylphenylalanylserylaspartylprolylleucylalanylaspartylglycylprolylthreonylisoleucylglutaminylasparaginylalanylthreonylleucyl"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "The requests in this sub-folder demonstrate the possible scenario tests and their structure.\n\nExecuting the requests in this folder runs the API tests mirroring typical user behavior.\n\nAlthough, most of the test partially failed due to their expected response, which could be considered as a feature enhancement as compared to a typical bug.\n\nHowever, to avoid bug repetition, Only one was reported\n\n**Therefore, recommendation for feature enhancement is recorded below**\n\n| **Feature request** | **Suggested solution** |\n| --- | --- |\n| A user search for a duplicated word as input (receive receive) | Autosuggest the word closest word to the sought word \"receive\" or suggest that the user checks the spelling of the word again |\n| Fetch a non-Latin letter only | Error message should ask the user to enter a Latin letter |\n| When a user enters a misspelt word | Misspelt word should be autocorrected and corresponding meaning displayed |"
+				}
+			],
+			"description": "The requests in this folder demonstrate the possible test scenarios.\n\nExecuting the requests in this folder runs the API tests mirroring typical user behavior considering both positives and negative checks.",
+			"auth": {
+				"type": "apikey",
+				"apikey": [
+					{
+						"key": "value",
+						"value": "66ef45eb8amsh5471d964edc9042p12b4dajsn80565566cd70",
+						"type": "string"
+					},
+					{
+						"key": "key",
+						"value": "X-RapidAPI-Key",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "1.3 Get Word Details Endpoint",
+			"item": [
+				{
+					"name": "Positive test",
+					"item": [
+						{
+							"name": "Happy path",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('synonyms');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"auth": {
+									"type": "apikey",
+									"apikey": [
+										{
+											"key": "in",
+											"value": "header",
+											"type": "string"
+										},
+										{
+											"key": "key",
+											"value": "X-RapidAPI-Key",
+											"type": "string"
+										},
+										{
+											"key": "value",
+											"value": "66ef45eb8amsh5471d964edc9042p12b4dajsn80565566cd70",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{Host}}/words/.22-caliber/synonyms",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										".22-caliber",
+										"synonyms"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"definitions\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('definitions');\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/h2o/definitions",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"h2o",
+										"definitions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"synonyms\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('synonyms');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/a/synonyms",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"a",
+										"synonyms"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"antonymns\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('antonyms');\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/freedom/antonyms",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"freedom",
+										"antonyms"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"examples\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('examples');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"auth": {
+									"type": "apikey",
+									"apikey": [
+										{
+											"key": "in",
+											"value": "header",
+											"type": "string"
+										},
+										{
+											"key": "key",
+											"value": "X-RapidAPI-Key",
+											"type": "string"
+										},
+										{
+											"key": "value",
+											"value": "66ef45eb8amsh5471d964edc9042p12b4dajsn80565566cd70",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{Host}}/words/cardinal/examples",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"cardinal",
+										"examples"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"hypernyms\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('typeOf');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/hatchback/typeOf",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"hatchback",
+										"typeOf"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"hyponyms\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('hasTypes');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/lavender/hasTypes",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"lavender",
+										"hasTypes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"holonymns\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('partOf');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/finger/partOf",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"finger",
+										"partOf"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"meronyms\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('hasParts');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/building/hasParts",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"building",
+										"hasParts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"Instances\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('instanceOf');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/Einstein/instanceOf",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"Einstein",
+										"instanceOf"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"similarTo\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											"  //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('similarTo');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/red/similarTo",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"red",
+										"similarTo"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"phrases with \" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											"  //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('also');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/bump/also",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"bump",
+										"also"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"verb\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('entails');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/rub/entails",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"rub",
+										"entails"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"groupings\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('memberOf');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/dory/memberOf",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"dory",
+										"memberOf"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"substance of\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"const jsonData = pm.response.json();\r",
+											"pm.test(\"Test data type of the response\", () => {\r",
+											"  pm.expect(jsonData).to.be.an(\"object\");\r",
+											"  pm.expect(jsonData.word).to.be.equal(\"cult\");\r",
+											"});\r",
+											"pm.test(\"Response body is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body).to.have.property('hasMembers');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/cult/hasMembers",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"cult",
+										"hasMembers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"substance as a part\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('substanceOf');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/water/substanceOf",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"water",
+										"substanceOf"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"domain category\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											"const jsonData = pm.response.json();\r",
+											"pm.test(\"Test data type of the response\", () => {\r",
+											"  pm.expect(jsonData).to.be.an(\"object\");\r",
+											"  pm.expect(jsonData.word).to.be.equal(\"wood\");\r",
+											"});\r",
+											"pm.test(\"Response body is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body).to.have.property('hasSubstances');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/wood/hasSubstances",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"wood",
+										"hasSubstances"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"category grouping\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('inCategory');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/chaotic/inCategory",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"chaotic",
+										"inCategory"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"usage\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('usageOf');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/advil/usageOf",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"advil",
+										"usageOf"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"domain usage\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('hasUsages');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/colloquialism/hasUsages",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"colloquialism",
+										"hasUsages"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"region\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											"const jsonData = pm.response.json();\r",
+											"pm.test(\"Test data type of the response\", () => {\r",
+											"  pm.expect(jsonData).to.be.an(\"object\");\r",
+											"  pm.expect(jsonData.word).to.be.equal(\"chips\");\r",
+											"});\r",
+											"pm.test(\"Response body is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body).to.have.property('inRegion');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/chips/inRegion",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"chips",
+										"inRegion"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"where\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('regionOf');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/Canada/regionOf",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"Canada",
+										"regionOf"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"relevance\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('pertainsTo');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/.22-caliber/pertainsTo",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										".22-caliber",
+										"pertainsTo"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the \"part of a speech\" of a word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('partOfSpeech');\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/time/partOfSpeech",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"time",
+										"partOfSpeech"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the category of max allowed length (45)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											" //check the expected response\r",
+											"const jsonData = pm.response.json();\r",
+											"pm.test(\"check response body\", function () {\r",
+											"    pm.expect(jsonData.inCategory).to.be.empty;\r",
+											"});\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body).to.have.property('inCategory');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/Pneumonoultramicroscopicsilicovolcanoconiosis/inCategory",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"Pneumonoultramicroscopicsilicovolcanoconiosis",
+										"inCategory"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the definition of a value above the min allowed length (2)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"    pm.expect(body).to.have.property('definitions');\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/in/definitions",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"in",
+										"definitions"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "The requests in this sub-folder demonstrate positive test scenarios for [word detail](https://www.wordsapi.com/docs) endpoint.\n\n## Summary\n\nAll the executed test scripts for each request were successful and passed",
+					"auth": {
+						"type": "apikey",
+						"apikey": [
+							{
+								"key": "key",
+								"value": "X-RapidAPI-Key",
+								"type": "string"
+							},
+							{
+								"key": "value",
+								"value": "66ef45eb8amsh5471d964edc9042p12b4dajsn80565566cd70",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Negative test",
+					"item": [
+						{
+							"name": "Fetch a valid endpoint with empty input",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.message) .to.equal (\"Please enter a word\")\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/ /memberOf",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										" ",
+										"memberOf"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Invalid endpoint for \"antonyms\"",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.error) .to.equal ('Your request is invalid')\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/freedom/anton",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"freedom",
+										"anton"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch nonexistent word detail endpoint",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Check response body\", function () {\r",
+											"    const body = pm.response.json();\r",
+											"    pm.expect(body.word).to.be.a('string')\r",
+											"});\r",
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.error) .to.equal ('Your request is invalid, no such endpoint exist')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"auth": {
+									"type": "apikey",
+									"apikey": [
+										{
+											"key": "in",
+											"value": "header",
+											"type": "string"
+										},
+										{
+											"key": "key",
+											"value": "X-RapidAPI-Key",
+											"type": "string"
+										},
+										{
+											"key": "value",
+											"value": "66ef45eb8amsh5471d964edc9042p12b4dajsn80565566cd70",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{Host}}/words/passed away/figureOfSpeech",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"passed away",
+										"figureOfSpeech"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the word with no antonyms",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"const jsonData = pm.response.json();\r",
+											"pm.test(\"check response body\", function () {\r",
+											"    pm.expect(jsonData.antonyms).to.be.empty;\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/putting/antonyms",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"putting",
+										"antonyms"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a synonymn with invalid auth",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.message) .to.equal (\"Invalid API key. Go to https://docs.rapidapi.com/docs/keys for more info.\")\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/king/synonyms",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"king",
+										"synonyms"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a word with a random endpoint",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.error) .to.equal ('Your request is invalid, no such endpoint exist')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/beautiful/scissors",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"beautiful",
+										"scissors"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a word with \"non specified\" endpoint",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.error) .to.equal ('Your request is invalid, no such endpoint exist')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/beautiful/pronunciation",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"beautiful",
+										"pronunciation"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a word with \"unspecified\" endpoint",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.error) .to.equal ('Your request is invalid, no such endpoint exist')\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/beautiful/frequency",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"beautiful",
+										"frequency"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch the word detail of a non-Latin word",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											" //check the expected response\r",
+											"pm.test(\"Error message is correct\", function () {\r",
+											"    const body = pm.response.json()\r",
+											"    pm.expect(body.message) .to.equal (\"word not found, enter a latin letter\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Host}}/words/мама/typeOf",
+									"host": [
+										"{{Host}}"
+									],
+									"path": [
+										"words",
+										"мама",
+										"typeOf"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "Although, most of the test partially failed due to their expected response, which could be considered as a feature enhancement as compared to a typical bug.\n\nHowever, to avoid bug repetition, Only few is reported. Also,\n\n**Therefore, recommendation for feature enhancement is recorded below.**\n\n| **Feature request** | **Suggested solution** |\n| --- | --- |\n| Endpoints for ***punctuation and frequency*** were omitted in the specification provided. | The word detail endpoints should be updated for test validation. |",
+					"auth": {
+						"type": "apikey",
+						"apikey": [
+							{
+								"key": "key",
+								"value": "X-RapidAPI-Key",
+								"type": "string"
+							},
+							{
+								"key": "value",
+								"value": "66ef45eb8amsh5471d964edc9042p12b4dajsn80565566cd70",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			],
+			"description": "The requests in this folder demonstrate the possible test scenarios for each stipulated endpoint.\n\nExecuting the requests in this folder runs the API tests mirroring typical user behavior considering both positives and negative checks.\n\nHowever, some important endpoints were missed for example;"
+		}
+	]
+}
