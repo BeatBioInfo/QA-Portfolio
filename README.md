@@ -1,2 +1,2 @@
 # QA-Portfolio
-Test compilation
+List of all manual project 
