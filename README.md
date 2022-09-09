@@ -1,2 +1,2 @@
-# QA-Portfolio
-Backend testing of WORD API 
+# WORD API
+Backend testing 
