@@ -1,2 +1,2 @@
-# WORD API
-Backend testing 
+# API TESTING
+Backend testing of WORD API
