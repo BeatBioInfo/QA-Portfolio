@@ -1,2 +1,2 @@
 # QA-Portfolio
-List of all manual project 
+Backend testing of WORD API 
