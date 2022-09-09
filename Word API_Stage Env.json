@@ -1,0 +1,27 @@
+{
+	"id": "580440fc-f470-4890-9f89-b7e4ae4a935a",
+	"name": "Stage Env (Word API)",
+	"values": [
+		{
+			"key": "Host",
+			"value": "https://wordsapiv1.p.rapidapi.com",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "InsecuredAPI",
+			"value": "http://wordsapiv1.p.rapidapi.com",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "API-V2",
+			"value": "https://wordsapiv2.p.rapidapi.com",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2022-07-25T06:23:02.721Z",
+	"_postman_exported_using": "Postman/9.25.1"
+}
