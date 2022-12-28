@@ -1,4 +1,4 @@
-# API TESTING
+# API TESTING USING POSTMAN
 Backend testing of WORD API
 
 # Tested two GET endpoints:
