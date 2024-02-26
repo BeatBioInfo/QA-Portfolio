@@ -1,14 +1,10 @@
-# API TESTING USING POSTMAN
-Backend testing of WORD API
+## Feel free to leave a comment
 
-# Tested two GET endpoints:
+## What is this Repository about?
 
-GET https://wordsapiv1.p.mashape.com/words/{word}, 
-
-GET https://wordsapiv1.p.mashape.com/words/{word}/{detail type},
-
-Link to test checklist - https://docs.google.com/spreadsheets/d/1mxsf2ZZH3LcB_ZQ1HQZxth6T7a84oNdi/edit?usp=sharing&ouid=107706676732067893366&rtpof=true&sd=true
-
-Link to postman collection - https://drive.google.com/file/d/1XZcJbVpjoQxFIB1rPUBtnVRy-kevHLL4/view?usp=sharing
-
-Its environment - https://drive.google.com/file/d/1YtwDXf5-LkSkBUr_451bjRrOhNbhq17m/view?usp=sharing
+- This repo contains example automation code for the following using Selenium Framework :
+- Demo Website: [https://katalon-demo-cura.herokuapp.com/]
+- Test Suite used Page Object ModelInclude - Login Page, Home Page, Book an Appointment Page with assertions
+- The build tool for the project is Maven.
+- TestNG is the testing framework for organizing and running tests and performing Assertions
+- Tests are run on Chrome browser using Chrome WebDriver.
