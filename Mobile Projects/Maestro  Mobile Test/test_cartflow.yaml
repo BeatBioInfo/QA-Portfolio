@@ -1,0 +1,22 @@
+appId: com.swaglabsmobileapp
+---
+- runFlow: "firstflow.yaml"
+- tapOn:
+    text: "ADD TO CART"
+    index: 0
+- tapOn: "test-ADD TO CART"
+- assertVisible: "test-Price"
+- swipe:
+    direction: "UP"
+    duration: 100
+- tapOn: "$15.99"
+- tapOn:
+    point: "7%,15%"
+- tapOn: "ADD TO CART"
+- tapOn:
+    point: "92%,7%"
+- swipe:
+    direction: "UP"
+    duration: 400
+- assertVisible: "test-CONTINUE SHOPPING"
+

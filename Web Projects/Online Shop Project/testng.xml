@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="All OnafriqTest Suite">
+    <test verbose="2" preserve-order="true" name="AutomationExercise">
+        <classes>
+            <class name="testng.AddToCartTest"/>
+            <class name="testng.BaseTest"/>
+            <class name="testng.FeaturedItemTest"/>
+            <class name="testng.LoginTests"/>
+            <class name="testng.PaymentAndCheckOutTest"/>
+        </classes>
+    </test>
+</suite>

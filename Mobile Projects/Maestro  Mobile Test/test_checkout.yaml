@@ -1,0 +1,33 @@
+appId: com.swaglabsmobileapp
+---
+- runFlow: "test_cartflow.yaml"
+- tapOn: "test-CHECKOUT"
+- assertVisible: "CHECKOUT: INFORMATION"
+- tapOn: "First Name"
+- inputText: "Beatrice"
+- tapOn: "Last Name"
+- inputText: "Oluwakemisola"
+- tapOn: "Zip/Postal Code"
+- inputText: "POB 5114"
+- swipe:
+    start: "90%, 50%"
+    end: "10%, 50%"
+- assertVisible: "test-CANCEL"
+- tapOn: "test-CONTINUE"
+- swipe:
+    direction: "UP"
+    duration: 400
+- swipe:
+    direction: "UP"
+    duration: 400
+- assertVisible: "test-CANCEL"
+- tapOn: "test-FINISH"
+- assertVisible: "CHECKOUT: COMPLETE!"
+- assertVisible: "THANK YOU FOR YOU ORDER"
+- tapOn: "BACK HOME"
+- tapOn:
+    point: "8%,7%"
+- tapOn: "RESET APP STATE"
+- tapOn:
+    point: "8%,7%"
+- tapOn: "LOGOUT"
